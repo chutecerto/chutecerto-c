@@ -35,6 +35,69 @@ export type Database = {
         }
         Relationships: []
       }
+      chuteiras_campo: {
+        Row: {
+          id: number
+          nome: string
+          tamanho: string | null
+          url_imagem: string | null
+        }
+        Insert: {
+          id?: number
+          nome: string
+          tamanho?: string | null
+          url_imagem?: string | null
+        }
+        Update: {
+          id?: number
+          nome?: string
+          tamanho?: string | null
+          url_imagem?: string | null
+        }
+        Relationships: []
+      }
+      chuteiras_futsal: {
+        Row: {
+          id: number
+          nome: string
+          tamanho: string | null
+          url_imagem: string | null
+        }
+        Insert: {
+          id?: number
+          nome: string
+          tamanho?: string | null
+          url_imagem?: string | null
+        }
+        Update: {
+          id?: number
+          nome?: string
+          tamanho?: string | null
+          url_imagem?: string | null
+        }
+        Relationships: []
+      }
+      chuteiras_society: {
+        Row: {
+          id: number
+          nome: string
+          tamanho: string | null
+          url_imagem: string | null
+        }
+        Insert: {
+          id?: number
+          nome: string
+          tamanho?: string | null
+          url_imagem?: string | null
+        }
+        Update: {
+          id?: number
+          nome?: string
+          tamanho?: string | null
+          url_imagem?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

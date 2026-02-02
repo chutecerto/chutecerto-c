@@ -1,15 +1,23 @@
 import { useState } from "react";
 import { CatalogGrid } from "@/components/catalog/CatalogGrid";
 import { SizeFilter } from "@/components/catalog/SizeFilter";
+import { CategoryFilter, type Category } from "@/components/catalog/CategoryFilter";
 import { useCatalog } from "@/hooks/useCatalog";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
+const CATEGORY_LABELS: Record<Category, string> = {
+  campo: "Campo",
+  futsal: "Futsal",
+  society: "Society",
+};
+
 const Catalog = () => {
   const navigate = useNavigate();
+  const [selectedCategory, setSelectedCategory] = useState<Category>("campo");
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
-  const { data: chuteiras = [], isLoading, error } = useCatalog(selectedSize || undefined);
+  const { data: chuteiras = [], isLoading, error } = useCatalog(selectedCategory, selectedSize || undefined);
 
   return (
     <div className="min-h-screen bg-background">
@@ -34,6 +42,14 @@ const Catalog = () => {
           </p>
         </header>
 
+        {/* Filtro de Categoria */}
+        <div className="mb-4">
+          <CategoryFilter 
+            selectedCategory={selectedCategory}
+            onCategorySelect={setSelectedCategory}
+          />
+        </div>
+
         {/* Filtro de Numeração */}
         <div className="mb-8">
           <SizeFilter 
@@ -48,8 +64,8 @@ const Catalog = () => {
             <div className="mb-6 text-center">
               <p className="text-muted-foreground">
                 {selectedSize 
-                  ? `${chuteiras.length} chuteira(s) encontrada(s) no tamanho ${selectedSize}`
-                  : `${chuteiras.length} chuteira(s) no catálogo`
+                  ? `${chuteiras.length} chuteira(s) de ${CATEGORY_LABELS[selectedCategory]} encontrada(s) no tamanho ${selectedSize}`
+                  : `${chuteiras.length} chuteira(s) de ${CATEGORY_LABELS[selectedCategory]} no catálogo`
                 }
               </p>
             </div>

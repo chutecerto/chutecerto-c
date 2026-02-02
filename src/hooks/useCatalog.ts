@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
+export type Category = "campo" | "futsal" | "society";
+
 interface Chuteira {
   id: string;
   nome: string;
@@ -8,13 +10,21 @@ interface Chuteira {
   numeros_disponiveis: string[];
 }
 
-export const useCatalog = (numeroFiltro?: string) => {
+const TABLE_MAP: Record<Category, "chuteiras_campo" | "chuteiras_futsal" | "chuteiras_society"> = {
+  campo: "chuteiras_campo",
+  futsal: "chuteiras_futsal",
+  society: "chuteiras_society",
+};
+
+export const useCatalog = (categoria: Category = "campo", numeroFiltro?: string) => {
   return useQuery({
-    queryKey: ["chuteiras", numeroFiltro],
+    queryKey: ["chuteiras", categoria, numeroFiltro],
     queryFn: async (): Promise<Chuteira[]> => {
-      // Buscar chuteiras do Supabase
+      const tableName = TABLE_MAP[categoria];
+      
+      // Buscar chuteiras do Supabase da tabela correspondente à categoria
       const { data, error } = await supabase
-        .from('chuteiras')
+        .from(tableName)
         .select('*')
         .order('nome', { ascending: true });
 

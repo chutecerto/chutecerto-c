@@ -16,44 +16,69 @@ const TABLE_MAP: Record<Category, "chuteiras_campo" | "chuteiras_futsal" | "chut
   society: "chuteiras_society",
 };
 
-export const useCatalog = (categoria: Category = "campo", numeroFiltro?: string) => {
+export const useCatalog = (categoria: Category | null = null, numeroFiltro?: string) => {
   return useQuery({
     queryKey: ["chuteiras", categoria, numeroFiltro],
     queryFn: async (): Promise<Chuteira[]> => {
-      const tableName = TABLE_MAP[categoria];
-      
-      // Buscar chuteiras do Supabase da tabela correspondente à categoria
-      const { data, error } = await supabase
-        .from(tableName)
-        .select('*')
-        .order('nome', { ascending: true });
+      let allChuteiras: Chuteira[] = [];
 
-      if (error) {
-        console.error('Erro ao buscar chuteiras:', error);
-        throw error;
+      if (categoria) {
+        // Buscar de uma tabela específica
+        const tableName = TABLE_MAP[categoria];
+        const { data, error } = await supabase
+          .from(tableName)
+          .select('*')
+          .order('nome', { ascending: true });
+
+        if (error) {
+          console.error('Erro ao buscar chuteiras:', error);
+          throw error;
+        }
+
+        if (data) {
+          allChuteiras = data.map((item) => ({
+            id: `${categoria}-${item.id}`,
+            nome: item.nome,
+            foto_url: item.url_imagem || '',
+            numeros_disponiveis: item.tamanho ? item.tamanho.split(',').map(t => t.trim()) : []
+          }));
+        }
+      } else {
+        // Buscar de todas as tabelas
+        const [campoRes, futsalRes, societyRes] = await Promise.all([
+          supabase.from('chuteiras_campo').select('*').order('nome', { ascending: true }),
+          supabase.from('chuteiras_futsal').select('*').order('nome', { ascending: true }),
+          supabase.from('chuteiras_society').select('*').order('nome', { ascending: true }),
+        ]);
+
+        if (campoRes.error) throw campoRes.error;
+        if (futsalRes.error) throw futsalRes.error;
+        if (societyRes.error) throw societyRes.error;
+
+        const mapData = (data: any[], prefix: string) => 
+          (data || []).map((item) => ({
+            id: `${prefix}-${item.id}`,
+            nome: item.nome,
+            foto_url: item.url_imagem || '',
+            numeros_disponiveis: item.tamanho ? item.tamanho.split(',').map((t: string) => t.trim()) : []
+          }));
+
+        allChuteiras = [
+          ...mapData(campoRes.data, 'campo'),
+          ...mapData(futsalRes.data, 'futsal'),
+          ...mapData(societyRes.data, 'society'),
+        ].sort((a, b) => a.nome.localeCompare(b.nome));
       }
-
-      if (!data) {
-        return [];
-      }
-
-      // Transformar os dados do Supabase para o formato esperado
-      const chuteiras: Chuteira[] = data.map((item) => ({
-        id: item.id.toString(),
-        nome: item.nome,
-        foto_url: item.url_imagem || '',
-        numeros_disponiveis: item.tamanho ? item.tamanho.split(',').map(t => t.trim()) : []
-      }));
 
       // Aplicar filtro de numeração se especificado
       if (numeroFiltro) {
-        return chuteiras.filter(chuteira => 
+        return allChuteiras.filter(chuteira => 
           chuteira.numeros_disponiveis.includes(numeroFiltro)
         );
       }
 
-      return chuteiras;
+      return allChuteiras;
     },
-    staleTime: 5 * 60 * 1000, // 5 minutos de cache
+    staleTime: 5 * 60 * 1000,
   });
 };

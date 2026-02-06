@@ -3,10 +3,10 @@ import { supabase } from "@/integrations/supabase/client";
 
 export type Category = "campo" | "futsal" | "society";
 
-interface Chuteira {
+export interface Chuteira {
   id: string;
   nome: string;
-  foto_url: string;
+  image_url: string;
   numeros_disponiveis: string[];
 }
 
@@ -36,10 +36,13 @@ export const useCatalog = (categoria: Category | null = null, numeroFiltro?: str
         }
 
         if (data) {
+          if (process.env.NODE_ENV === 'development') {
+            console.log(`[Catalog] Dados de ${categoria}:`, data.map(d => ({ nome: d.nome, image_url: d.image_url })));
+          }
           allChuteiras = data.map((item) => ({
             id: `${categoria}-${item.id}`,
             nome: item.nome,
-            foto_url: item.url_imagem || '',
+            image_url: item.image_url || '',
             numeros_disponiveis: item.tamanho ? item.tamanho.split(',').map(t => t.trim()) : []
           }));
         }
@@ -55,13 +58,17 @@ export const useCatalog = (categoria: Category | null = null, numeroFiltro?: str
         if (futsalRes.error) throw futsalRes.error;
         if (societyRes.error) throw societyRes.error;
 
-        const mapData = (data: any[], prefix: string) => 
-          (data || []).map((item) => ({
+        const mapData = (data: any[], prefix: string) => {
+          if (process.env.NODE_ENV === 'development') {
+            console.log(`[Catalog] Dados de ${prefix}:`, data?.map(d => ({ nome: d.nome, image_url: d.image_url })));
+          }
+          return (data || []).map((item) => ({
             id: `${prefix}-${item.id}`,
             nome: item.nome,
-            foto_url: item.url_imagem || '',
+            image_url: item.image_url || '',
             numeros_disponiveis: item.tamanho ? item.tamanho.split(',').map((t: string) => t.trim()) : []
           }));
+        };
 
         allChuteiras = [
           ...mapData(campoRes.data, 'campo'),

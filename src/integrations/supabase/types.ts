@@ -17,84 +17,84 @@ export type Database = {
       chuteiras: {
         Row: {
           id: number
+          image_url: string | null
           nome: string
           tamanho: string | null
-          url_imagem: string | null
         }
         Insert: {
           id?: number
+          image_url?: string | null
           nome: string
           tamanho?: string | null
-          url_imagem?: string | null
         }
         Update: {
           id?: number
+          image_url?: string | null
           nome?: string
           tamanho?: string | null
-          url_imagem?: string | null
         }
         Relationships: []
       }
       chuteiras_campo: {
         Row: {
           id: number
+          image_url: string | null
           nome: string
           tamanho: string | null
-          url_imagem: string | null
         }
         Insert: {
           id?: number
+          image_url?: string | null
           nome: string
           tamanho?: string | null
-          url_imagem?: string | null
         }
         Update: {
           id?: number
+          image_url?: string | null
           nome?: string
           tamanho?: string | null
-          url_imagem?: string | null
         }
         Relationships: []
       }
       chuteiras_futsal: {
         Row: {
           id: number
+          image_url: string | null
           nome: string
           tamanho: string | null
-          url_imagem: string | null
         }
         Insert: {
           id?: number
+          image_url?: string | null
           nome: string
           tamanho?: string | null
-          url_imagem?: string | null
         }
         Update: {
           id?: number
+          image_url?: string | null
           nome?: string
           tamanho?: string | null
-          url_imagem?: string | null
         }
         Relationships: []
       }
       chuteiras_society: {
         Row: {
           id: number
+          image_url: string | null
           nome: string
           tamanho: string | null
-          url_imagem: string | null
         }
         Insert: {
           id?: number
+          image_url?: string | null
           nome: string
           tamanho?: string | null
-          url_imagem?: string | null
         }
         Update: {
           id?: number
+          image_url?: string | null
           nome?: string
           tamanho?: string | null
-          url_imagem?: string | null
         }
         Relationships: []
       }

@@ -1,13 +1,8 @@
 import { useState } from "react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-
-interface Chuteira {
-  id: string;
-  nome: string;
-  foto_url: string;
-  numeros_disponiveis: string[];
-}
+import { Skeleton } from "@/components/ui/skeleton";
+import type { Chuteira } from "@/hooks/useCatalog";
 
 interface CatalogCardProps {
   chuteira: Chuteira;
@@ -40,13 +35,13 @@ export const CatalogCard = ({ chuteira, index }: CatalogCardProps) => {
       <Dialog>
         <DialogTrigger asChild>
           <div className="aspect-[4/3] overflow-hidden rounded-xl cursor-pointer hover:opacity-90 transition-opacity">
-            {!imageError ? (
+            {chuteira.image_url && !imageError ? (
               <>
                 {!imageLoaded && (
-                  <div className="w-full h-full bg-muted animate-pulse" />
+                  <Skeleton className="w-full h-full" />
                 )}
                 <img
-                  src={chuteira.foto_url}
+                  src={chuteira.image_url}
                   alt={`Foto da chuteira ${chuteira.nome}`}
                   className={`w-full h-full object-cover transition-opacity duration-200 ${
                     imageLoaded ? 'opacity-100' : 'opacity-0'
@@ -72,11 +67,20 @@ export const CatalogCard = ({ chuteira, index }: CatalogCardProps) => {
         </DialogTrigger>
         <DialogContent className="max-w-4xl w-full p-0 overflow-hidden">
           <div className="relative">
-            <img
-              src={chuteira.foto_url}
-              alt={`Foto da chuteira ${chuteira.nome}`}
-              className="w-full h-auto max-h-[80vh] object-contain"
-            />
+            {chuteira.image_url ? (
+              <img
+                src={chuteira.image_url}
+                alt={`Foto da chuteira ${chuteira.nome}`}
+                className="w-full h-auto max-h-[80vh] object-contain"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = '/placeholder.svg';
+                }}
+              />
+            ) : (
+              <div className="w-full h-64 bg-muted flex items-center justify-center">
+                <p className="text-muted-foreground">Imagem não disponível</p>
+              </div>
+            )}
             <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-6">
               <h3 className="text-white text-xl font-semibold">{chuteira.nome}</h3>
             </div>

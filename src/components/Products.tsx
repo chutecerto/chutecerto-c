@@ -45,7 +45,7 @@ export const Products = () => {
                   
                   {/* Product Image */}
                   <div className="aspect-square overflow-hidden">
-                    <img src={produto.foto_url} alt={produto.nome} className="w-full h-full object-cover group-hover:scale-110 transition-smooth" loading="lazy" />
+                    <img src={produto.image_url || '/placeholder.svg'} alt={produto.nome} className="w-full h-full object-cover group-hover:scale-110 transition-smooth" loading="lazy" />
                   </div>
                   
                   {/* Product Info */}
@@ -71,7 +71,7 @@ export const Products = () => {
                   
                   {/* Product Image */}
                   <div className="aspect-square overflow-hidden">
-                    <img src={produto.foto_url} alt={produto.nome} className="w-full h-full object-cover group-hover:scale-110 transition-smooth" loading="lazy" />
+                    <img src={produto.image_url || '/placeholder.svg'} alt={produto.nome} className="w-full h-full object-cover group-hover:scale-110 transition-smooth" loading="lazy" />
                   </div>
                   
                   {/* Product Info */}

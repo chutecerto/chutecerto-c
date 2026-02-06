@@ -1,12 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { CatalogCard } from "./CatalogCard";
-
-interface Chuteira {
-  id: string;
-  nome: string;
-  foto_url: string;
-  numeros_disponiveis: string[];
-}
+import type { Chuteira } from "@/hooks/useCatalog";
 
 interface CatalogGridProps {
   chuteiras: Chuteira[];

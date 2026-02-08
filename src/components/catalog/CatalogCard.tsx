@@ -2,7 +2,9 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { Chuteira } from "@/hooks/useCatalog";
+import type { Product } from "@/lib/api";
+
+type Chuteira = Product;
 
 interface CatalogCardProps {
   chuteira: Chuteira;

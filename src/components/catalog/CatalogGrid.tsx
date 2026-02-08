@@ -1,6 +1,8 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { CatalogCard } from "./CatalogCard";
-import type { Chuteira } from "@/hooks/useCatalog";
+import type { Product } from "@/lib/api";
+
+type Chuteira = Product;
 
 interface CatalogGridProps {
   chuteiras: Chuteira[];

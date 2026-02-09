@@ -17,13 +17,21 @@ const Catalog = () => {
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
-  const { data: chuteiras = [], isLoading, error } = useCatalog(selectedCategory, selectedSize || undefined);
+
+  const {
+    data: chuteiras = [],
+    isLoading,
+    error,
+    refetch,
+    isFetching,
+  } = useCatalog(selectedCategory, selectedSize || undefined);
+
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-6">
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             onClick={() => navigate("/")}
             className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
           >
@@ -31,7 +39,7 @@ const Catalog = () => {
             Voltar ao Início
           </Button>
         </div>
-        
+
         <header className="text-center mb-8">
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
             Catálogo de Chuteiras
@@ -43,18 +51,12 @@ const Catalog = () => {
 
         {/* Filtro de Categoria */}
         <div className="mb-4">
-          <CategoryFilter 
-            selectedCategory={selectedCategory}
-            onCategorySelect={setSelectedCategory}
-          />
+          <CategoryFilter selectedCategory={selectedCategory} onCategorySelect={setSelectedCategory} />
         </div>
 
         {/* Filtro de Numeração */}
         <div className="mb-8">
-          <SizeFilter 
-            selectedSize={selectedSize}
-            onSizeSelect={setSelectedSize}
-          />
+          <SizeFilter selectedSize={selectedSize} onSizeSelect={setSelectedSize} />
         </div>
 
         <main>
@@ -68,16 +70,19 @@ const Catalog = () => {
                     ? `${chuteiras.length} chuteira(s) de ${CATEGORY_LABELS[selectedCategory]} no catálogo`
                     : selectedSize
                       ? `${chuteiras.length} chuteira(s) encontrada(s) no tamanho ${selectedSize}`
-                      : `${chuteiras.length} chuteira(s) no catálogo`
-                }
+                      : `${chuteiras.length} chuteira(s) no catálogo`}
               </p>
             </div>
           )}
-          
-          <CatalogGrid 
-            chuteiras={chuteiras} 
-            isLoading={isLoading} 
-            error={error} 
+
+          <CatalogGrid
+            chuteiras={chuteiras}
+            isLoading={isLoading}
+            error={error}
+            onRetry={() => {
+              void refetch();
+            }}
+            isRetrying={isFetching}
           />
         </main>
       </div>

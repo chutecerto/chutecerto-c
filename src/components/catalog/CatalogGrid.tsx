@@ -1,4 +1,5 @@
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 import { CatalogCard } from "./CatalogCard";
 import type { Product } from "@/lib/api";
 
@@ -8,10 +9,17 @@ interface CatalogGridProps {
   chuteiras: Chuteira[];
   isLoading: boolean;
   error: Error | null;
+  onRetry?: () => void;
+  isRetrying?: boolean;
 }
 
-export const CatalogGrid = ({ chuteiras, isLoading, error }: CatalogGridProps) => {
-  // Loading state com skeleton grid
+export const CatalogGrid = ({
+  chuteiras,
+  isLoading,
+  error,
+  onRetry,
+  isRetrying,
+}: CatalogGridProps) => {
   if (isLoading) {
     return (
       <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-6">
@@ -25,23 +33,26 @@ export const CatalogGrid = ({ chuteiras, isLoading, error }: CatalogGridProps) =
     );
   }
 
-  // Error state
   if (error) {
     return (
       <div className="text-center py-12">
         <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-6 max-w-md mx-auto">
           <h3 className="text-lg font-semibold text-destructive mb-2">
-            Erro ao carregar catálogo
+            Não foi possível carregar o catálogo
           </h3>
-          <p className="text-muted-foreground">
-            Não foi possível carregar as chuteiras. Tente novamente mais tarde.
+          <p className="text-muted-foreground mb-4">
+            Verifique sua conexão e tente novamente.
           </p>
+          {onRetry && (
+            <Button onClick={onRetry} disabled={isRetrying}>
+              {isRetrying ? "Tentando..." : "Tentar novamente"}
+            </Button>
+          )}
         </div>
       </div>
     );
   }
 
-  // Empty state
   if (chuteiras.length === 0) {
     return (
       <div className="text-center py-12">
@@ -57,15 +68,10 @@ export const CatalogGrid = ({ chuteiras, isLoading, error }: CatalogGridProps) =
     );
   }
 
-  // Grid with products
   return (
     <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-6">
       {chuteiras.map((chuteira, index) => (
-        <CatalogCard 
-          key={chuteira.id} 
-          chuteira={chuteira} 
-          index={index}
-        />
+        <CatalogCard key={chuteira.id} chuteira={chuteira} index={index} />
       ))}
     </div>
   );

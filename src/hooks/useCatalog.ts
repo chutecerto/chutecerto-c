@@ -6,21 +6,24 @@ export type { Category, Product as Chuteira };
 
 export const useCatalog = (categoria: Category | null = null, numeroFiltro?: string) => {
   return useQuery({
-    queryKey: ["chuteiras", categoria, numeroFiltro],
+    queryKey: ["catalogo", "products", categoria, numeroFiltro],
     queryFn: async (): Promise<Product[]> => {
       const products = await fetchProducts(categoria);
 
       // Aplicar filtro de numeração no frontend se especificado
       if (numeroFiltro) {
-        return products.filter(product => 
-          product.numeros_disponiveis.includes(numeroFiltro)
-        );
+        return products.filter((product) => product.sizes.includes(numeroFiltro));
       }
 
       return products;
     },
-    staleTime: 5 * 60 * 1000, // 5 minutos
-    retry: 1, // Evitar loops infinitos de retry
+    // Evitar cache antigo / estado local sobrescrevendo
+    staleTime: 0,
+    refetchOnMount: "always",
+    refetchOnReconnect: true,
     refetchOnWindowFocus: false,
+
+    // Evitar spam de requests (retry manual via botão)
+    retry: false,
   });
 };

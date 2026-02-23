@@ -36,7 +36,7 @@ export const CatalogCard = ({ chuteira, index }: CatalogCardProps) => {
     >
       <Dialog>
         <DialogTrigger asChild>
-          <div className="aspect-[4/3] overflow-hidden rounded-xl cursor-pointer hover:opacity-90 transition-opacity">
+          <div className="relative aspect-[4/3] overflow-hidden rounded-xl cursor-pointer hover:opacity-90 transition-opacity">
             {chuteira.image_url && !imageError ? (
               <>
                 {!imageLoaded && <Skeleton className="w-full h-full" />}
@@ -72,6 +72,11 @@ export const CatalogCard = ({ chuteira, index }: CatalogCardProps) => {
                   <p className="text-xs text-muted-foreground">Imagem não disponível</p>
                 </div>
               </div>
+            )}
+            {chuteira.category && (
+              <span className="absolute left-3 top-3 rounded-full bg-black/65 px-3 py-1 text-xs font-semibold text-white shadow">
+                {String(chuteira.category).toUpperCase()}
+              </span>
             )}
           </div>
         </DialogTrigger>
